@@ -1,7 +1,10 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:waterwin_app/core/firebase_init.dart';
 import 'package:waterwin_app/core/locator/locator.dart';
+import 'package:waterwin_app/presentations/account_page/domain/dto/fcm_token_dto.dart';
 import 'package:waterwin_app/presentations/account_page/domain/repository/profit_repository.dart';
+import 'package:waterwin_app/presentations/account_page/domain/repository/reminder_repository.dart';
 import 'package:waterwin_app/presentations/authentications_page/login_page/domain/repositories/local/auth_local_repository.dart';
 import 'package:waterwin_app/presentations/authentications_page/login_page/domain/repositories/remote/login_remote_repository.dart';
 import 'package:waterwin_app/presentations/information_page/domain/repository/local/information_local_repository.dart';
@@ -16,6 +19,7 @@ class LoginCubit extends Cubit<LoginState> {
     AuthLocalRepository? loginLocalRepository,
     PointLocalRepository? pointLocalRepository,
     ProfitRepository? profitRepository,
+    ReminderRepository? reminderRepository,
     InformationLocalRepository? informationRepository,
   }) : super(LoginState.initial()) {
     _loginRepository = loginRepository ?? getIt<LoginRepository>();
@@ -26,6 +30,7 @@ class LoginCubit extends Cubit<LoginState> {
     _pointLocalRepository =
         pointLocalRepository ?? getIt<PointLocalRepository>();
     _profitRepository = profitRepository ?? getIt<ProfitRepository>();
+    _reminderRepository = reminderRepository ?? getIt<ReminderRepository>();
   }
 
   late final LoginRepository _loginRepository;
@@ -33,6 +38,7 @@ class LoginCubit extends Cubit<LoginState> {
   late final InformationLocalRepository _informationRepository;
   late final PointLocalRepository _pointLocalRepository;
   late final ProfitRepository _profitRepository;
+  late final ReminderRepository _reminderRepository;
 
   Future<void> getLogin({
     required String email,
@@ -49,12 +55,14 @@ class LoginCubit extends Cubit<LoginState> {
         status: LoginStatus.error,
         errorMessage: error.message,
       ));
-    }, (response) {
+    }, (response) async {
       if (response.data?.information == null) {
         emit(state.copyWith(
           status: LoginStatus.gotoinformation,
         ));
       } else {
+        _reminderRepository.updateFCMToken(
+            fcmToken: await FirebaseApi().getFCMToken());
         emit(state.copyWith(
           status: LoginStatus.loaded,
         ));

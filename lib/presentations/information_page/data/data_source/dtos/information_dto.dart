@@ -10,6 +10,7 @@ class InformationDto {
     required this.activityLevel,
     required this.weatherCondition,
     required this.phoneNumber,
+    required this.fcmtoken,
   });
 
   final String? name;
@@ -21,6 +22,7 @@ class InformationDto {
   final String? wakeUpTime;
   final int? activityLevel;
   final int? weatherCondition;
+  final String? fcmtoken;
 
   final String? phoneNumber;
 
@@ -36,6 +38,7 @@ class InformationDto {
       activityLevel: json["activity_level"],
       weatherCondition: json["weather_condition"],
       phoneNumber: json["phone_number"],
+      fcmtoken: json["fcmtoken"],
     );
   }
 
@@ -50,10 +53,11 @@ class InformationDto {
         "activity_level": activityLevel,
         "weather_condition": weatherCondition,
         "phone_number": phoneNumber,
+        "fcmtoken": fcmtoken,
       };
 
   @override
   String toString() {
-    return "$name, $gender, $height, $weight, $age, $sleepTime, $wakeUpTime, $activityLevel, $weatherCondition, $phoneNumber, ";
+    return "$name, $gender, $height, $weight, $age, $sleepTime, $fcmtoken, $wakeUpTime, $activityLevel, $weatherCondition, $phoneNumber, ";
   }
 }

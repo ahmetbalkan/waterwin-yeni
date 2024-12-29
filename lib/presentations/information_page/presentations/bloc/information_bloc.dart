@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:waterwin_app/core/firebase_init.dart';
 import 'package:waterwin_app/core/locator/locator.dart';
 import 'package:waterwin_app/presentations/information_page/data/data_source/dtos/calculate_dto.dart';
 import 'package:waterwin_app/presentations/information_page/data/data_source/dtos/information_dto.dart';
@@ -13,15 +14,18 @@ class InformationBloc extends Cubit<InformationState> {
   InformationBloc({
     InformationRemoteRepository? informationRepository,
     InformationLocalRepository? informationLocalRepository,
+    FirebaseApi? firebaseApi,
   }) : super(const InformationState()) {
     _informationRepository =
         informationRepository ?? getIt<InformationRemoteRepository>();
     _informationLocalRepository =
         informationLocalRepository ?? getIt<InformationLocalRepository>();
+    _firebaseApi = firebaseApi ?? getIt<FirebaseApi>();
   }
 
   late final InformationRemoteRepository _informationRepository;
   late final InformationLocalRepository _informationLocalRepository;
+  late final FirebaseApi _firebaseApi;
 
   // Sayfa ilerleme ve geri gitme işlemleri
   Future<void> changePage(int newPage) async {
@@ -58,6 +62,8 @@ class InformationBloc extends Cubit<InformationState> {
   Future<void> addInformation() async {
     emit(state.copyWith(status: const InformationStatus.loading()));
 
+    var fcmtoken = await _firebaseApi.getFCMToken();
+
     final information = InformationDto(
       name: state.name,
       gender: state.gender,
@@ -69,6 +75,7 @@ class InformationBloc extends Cubit<InformationState> {
       activityLevel: state.activityLevel,
       weatherCondition: state.weather,
       phoneNumber: state.phoneNumber,
+      fcmtoken: fcmtoken,
     );
 
     log(information.toJson().toString());

@@ -12,6 +12,7 @@ import 'package:dio/dio.dart' as _i361;
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:go_router/go_router.dart' as _i583;
 import 'package:injectable/injectable.dart' as _i526;
+import 'package:waterwin_app/core/firebase_init.dart' as _i700;
 import 'package:waterwin_app/core/local_database/app_database.dart' as _i151;
 import 'package:waterwin_app/core/local_database/app_database_module.dart'
     as _i484;
@@ -100,6 +101,7 @@ extension GetItInjectableX on _i174.GetIt {
       () => databaseModule.provideDatabase(),
       preResolve: true,
     );
+    gh.singleton<_i700.FirebaseApi>(() => _i700.FirebaseApi());
     gh.lazySingleton<_i583.GoRouter>(() => routerModule.goRouter());
     gh.lazySingleton<_i1041.AdManager>(() => _i1041.AdManager());
     gh.factory<_i587.AuthDao>(
@@ -133,6 +135,8 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i856.DrinkReminderDataSource(gh<_i361.Dio>()));
     gh.singleton<_i512.ProfitDataSource>(
         () => _i512.ProfitDataSource(gh<_i361.Dio>()));
+    gh.singleton<_i807.AdminDataSource>(
+        () => _i807.AdminDataSource(gh<_i361.Dio>()));
     gh.singleton<_i705.ForgotPasswordDataSource>(
         () => _i705.ForgotPasswordDataSource(gh<_i361.Dio>()));
     gh.singleton<_i528.AuthDataSource>(
@@ -147,8 +151,6 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i407.PointDataSource(gh<_i361.Dio>()));
     gh.singleton<_i571.ReferanceDataSource>(
         () => _i571.ReferanceDataSource(gh<_i361.Dio>()));
-    gh.singleton<_i807.AdminDataSource>(
-        () => _i807.AdminDataSource(gh<_i361.Dio>()));
     gh.factory<_i962.ProfitRepository>(() => _i962.ProfitRepository(
           gh<_i512.ProfitDataSource>(),
           gh<_i982.AuthLocalRepository>(),

@@ -61,7 +61,6 @@ class _DrinkReminderPageState extends State<DrinkReminderPage> {
               context,
               "Reminder settings updated successfully",
             );
-            context.pop();
           }
         },
         builder: (context, state) {
@@ -523,33 +522,39 @@ class _TimePickerWidgetState extends State<TimePickerWidget> {
         Row(
           children: [
             Expanded(
-              child: CupertinoPicker(
-                scrollController: hourController,
-                itemExtent: 50,
-                onSelectedItemChanged: (index) {
-                  setState(() {
-                    selectedHour = index;
-                  });
-                },
-                children: List.generate(
-                    24,
-                    (index) =>
-                        Center(child: Text(index.toString().padLeft(2, '0')))),
+              child: SizedBox(
+                height: 300.h,
+                child: CupertinoPicker(
+                  scrollController: hourController,
+                  itemExtent: 50,
+                  onSelectedItemChanged: (index) {
+                    setState(() {
+                      selectedHour = index;
+                    });
+                  },
+                  children: List.generate(
+                      24,
+                      (index) => Center(
+                          child: Text(index.toString().padLeft(2, '0')))),
+                ),
               ),
             ),
             Expanded(
-              child: CupertinoPicker(
-                scrollController: minuteController,
-                itemExtent: 50,
-                onSelectedItemChanged: (index) {
-                  setState(() {
-                    selectedMinute = index;
-                  });
-                },
-                children: List.generate(
-                    60,
-                    (index) =>
-                        Center(child: Text(index.toString().padLeft(2, '0')))),
+              child: SizedBox(
+                height: 300.h,
+                child: CupertinoPicker(
+                  scrollController: minuteController,
+                  itemExtent: 50,
+                  onSelectedItemChanged: (index) {
+                    setState(() {
+                      selectedMinute = index;
+                    });
+                  },
+                  children: List.generate(
+                      60,
+                      (index) => Center(
+                          child: Text(index.toString().padLeft(2, '0')))),
+                ),
               ),
             ),
           ],
@@ -594,8 +599,9 @@ class _IntervalPickerWidgetState extends State<IntervalPickerWidget> {
   void initState() {
     super.initState();
     selectedInterval = widget.initialInterval;
-    intervalController =
-        FixedExtentScrollController(initialItem: selectedInterval - 1);
+    intervalController = FixedExtentScrollController(
+      initialItem: (selectedInterval ~/ 10) - 1,
+    );
   }
 
   @override
@@ -609,17 +615,18 @@ class _IntervalPickerWidgetState extends State<IntervalPickerWidget> {
     return Column(
       children: [
         SizedBox(
-          height: 300,
+          height: 300.h,
           child: CupertinoPicker(
             scrollController: intervalController,
             itemExtent: 50,
             onSelectedItemChanged: (index) {
               setState(() {
-                selectedInterval = index + 1;
+                selectedInterval = (index + 1) * 10;
               });
             },
-            children: List.generate(60, (index) {
-              return Center(child: Text("${index + 1} min"));
+            children: List.generate(6, (index) {
+              final value = (index + 1) * 10;
+              return Center(child: Text("$value min"));
             }),
           ),
         ),
